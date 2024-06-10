@@ -2,11 +2,19 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 #include "ShaderClass.h"
 #include "VAO.h"
 #include "VBO.h"
 #include "EBO.h"
 #include "Texture.h"
+
+// Constants
+const int WIDTH = 800;
+const int HEIGHT = 600;
 
 int main()
 {
@@ -50,7 +58,7 @@ int main()
 	};
 	
 	// Create window
-	GLFWwindow* window = glfwCreateWindow(800, 600, "OpenGL", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "OpenGL", NULL, NULL);
 	if (window == NULL)
 	{
 		std::cout << "Failed to create GLFW window" << std::endl;
@@ -60,7 +68,7 @@ int main()
 	glfwMakeContextCurrent(window);
 	
 	gladLoadGL();
-	glViewport(0, 0, 800, 600);
+	glViewport(0, 0, WIDTH, HEIGHT);
 
 	Shader shaderProgram("default.vert", "default.frag");
 
@@ -102,6 +110,23 @@ int main()
 		
 		// Set scale uniform
 		glUniform1f(uniScale, scale);
+		
+		// Transforms
+		glm::mat4 model(1.0f);
+		glm::mat4 view(1.0f);
+		glm::mat4 projection(1.0f);
+
+		model = glm::rotate(model, float(glfwGetTime()), glm::vec3(0.0f, 1.0f, 0.0f));
+		view = glm::translate(view, glm::vec3(0.0f, -0.5f, -2.0f));
+		projection = glm::perspective(glm::radians(45.0f), float(WIDTH) / float(HEIGHT), 0.1f, 100.0f);
+
+		// Set matrix uniforms
+		int uniModel = glGetUniformLocation(shaderProgram.ID, "model");
+		glUniformMatrix4fv(uniModel, 1, GL_FALSE, glm::value_ptr(model));
+		int uniView = glGetUniformLocation(shaderProgram.ID, "view");
+		glUniformMatrix4fv(uniView, 1, GL_FALSE, glm::value_ptr(view));
+		int uniProjection = glGetUniformLocation(shaderProgram.ID, "projection");
+		glUniformMatrix4fv(uniProjection, 1, GL_FALSE, glm::value_ptr(projection));
 
 		// Update scale logic
 		scale += scaleChange;
