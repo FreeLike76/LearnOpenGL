@@ -26,35 +26,24 @@ int main()
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	// Vertices for triangle
-	//GLfloat vertices[] = {
-	//	// Position				// Color
-	//	-0.5f, -0.5f, 0.0f,		0.8f, 0.3f, 0.02f, // Lower left
-	//	 0.5f, -0.5f, 0.0f,		0.8f, 0.3f, 0.02f, // Lower right
-	//	 0.0f, 0.5f, 0.0f,		1.0f, 0.6f, 0.32f, // Upper middle
-	//	 -0.25f, 0.0f, 0.0f,	0.9f, 0.45f, 0.17f, // Inner left
-	//	 0.25f, 0.0f, 0.0f,		0.9f, 0.45f, 0.17f, // Inner right
-	//	 0.0f, -0.5f, 0.0f,		0.8f, 0.3f, 0.02f, // Inner down
-	//};
-
-	//GLuint indices[] = {
-	//	5, 3, 0,
-	//	4, 2, 3,
-	//	1, 4, 5
-	//};
-
-	unsigned int nVertices = 4;
+	unsigned int nVertices = 5;
 	GLfloat vertices[] = {
 		// Position				// Color			// UV
-		-0.5f, -0.5f, 0.0f,		1.0f, 0.0f, 0.0f,	0.0f, 0.0f,
-		-0.5f,  0.5f, 0.0f,		0.0f, 1.0f, 0.0f,	0.0f, 1.0f,
-		 0.5f,  0.5f, 0.0f,		0.0f, 0.0f, 1.0f,	1.0f, 1.0f,
-		 0.5f, -0.5f, 0.0f,		1.0f, 1.0f, 1.0f,	1.0f, 0.0f,
+		-0.5f,  0.0f,  0.5f,		1.0f, 0.0f, 0.0f,	0.0f, 0.0f,
+		-0.5f,  0.0f, -0.5f,		0.0f, 1.0f, 0.0f,	0.0f, 1.0f,
+		 0.5f,  0.0f, -0.5f,		0.0f, 0.0f, 1.0f,	1.0f, 1.0f,
+		 0.5f,  0.0f,  0.5f,		0.0f, 0.0f, 0.0f,	1.0f, 0.0f,
+		 0.0f,  0.8f,  0.0f,		1.0f, 1.0f, 1.0f,	0.5f, 0.5f,
 	};
 
-	unsigned int nIndices = 6;
+	unsigned int nIndices = 18;
 	GLuint indices[] = {
-		0, 2, 1,
-		0, 3, 2
+		0, 4, 1,
+		1, 4, 2,
+		2, 4, 3,
+		3, 4, 0,
+		0, 1, 2,
+		0, 2, 3
 	};
 	
 	// Create window
@@ -90,26 +79,20 @@ int main()
 	VBO1.Unbind();
 	EBO1.Unbind();
 
-	// Get scale uniform
-	GLuint uniScale = glGetUniformLocation(shaderProgram.ID, "scale");
-	float scale = 0.5f;
-	float scaleChange = 0.001f;
-
 	// Texture
 	Texture image("Assets/Textures/image.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
 	image.texUnit(shaderProgram, "tex0", 0);
+
+	glEnable(GL_DEPTH_TEST);
 
 	// Main loop
 	while (!glfwWindowShouldClose(window))
 	{
 		glClearColor(0.07f, 0.12f, 0.17f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		
 		// Activate shader
 		shaderProgram.Activate();
-		
-		// Set scale uniform
-		glUniform1f(uniScale, scale);
 		
 		// Transforms
 		glm::mat4 model(1.0f);
@@ -123,17 +106,12 @@ int main()
 		// Set matrix uniforms
 		int uniModel = glGetUniformLocation(shaderProgram.ID, "model");
 		glUniformMatrix4fv(uniModel, 1, GL_FALSE, glm::value_ptr(model));
+
 		int uniView = glGetUniformLocation(shaderProgram.ID, "view");
 		glUniformMatrix4fv(uniView, 1, GL_FALSE, glm::value_ptr(view));
+
 		int uniProjection = glGetUniformLocation(shaderProgram.ID, "projection");
 		glUniformMatrix4fv(uniProjection, 1, GL_FALSE, glm::value_ptr(projection));
-
-		// Update scale logic
-		scale += scaleChange;
-		if (scale > 1.0f)
-			scaleChange = -scaleChange;
-		else if (scale < 0.5f)
-			scaleChange = -scaleChange;
 
 		// Set texture to draw
 		image.Bind();

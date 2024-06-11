@@ -9,9 +9,7 @@ layout (location = 2) in vec2 aTex;
 out vec3 color;
 out vec2 texCoord;
 
-// Config
-uniform float scale;
-
+// Uniforms
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;

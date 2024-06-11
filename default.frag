@@ -7,7 +7,7 @@ in vec2 texCoord;
 // Output data
 out vec4 FragColor;
 
-// Config
+// Uniforms
 uniform sampler2D tex0;
 
 void main()
