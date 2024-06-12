@@ -11,10 +11,8 @@
 #include "VBO.h"
 #include "EBO.h"
 #include "Texture.h"
-
-// Constants
-const int WIDTH = 800;
-const int HEIGHT = 600;
+#include "Camera.h"
+#include "Utils.h"
 
 int main()
 {
@@ -47,7 +45,14 @@ int main()
 	};
 	
 	// Create window
-	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "OpenGL", NULL, NULL);
+	int windowWidth = Utils::Constants::Screen::WIDTH;
+	int windowHeight = Utils::Constants::Screen::HEIGHT;
+	GLFWwindow* window = glfwCreateWindow(
+		windowWidth,
+		windowHeight,
+		"OpenGL", NULL, NULL
+	);
+
 	if (window == NULL)
 	{
 		std::cout << "Failed to create GLFW window" << std::endl;
@@ -57,7 +62,7 @@ int main()
 	glfwMakeContextCurrent(window);
 	
 	gladLoadGL();
-	glViewport(0, 0, WIDTH, HEIGHT);
+	glViewport(0, 0, windowWidth, windowHeight);
 
 	Shader shaderProgram("default.vert", "default.frag");
 
@@ -85,6 +90,8 @@ int main()
 
 	glEnable(GL_DEPTH_TEST);
 
+	Camera camera(windowWidth, windowHeight, glm::vec3(0.0f, 0.0f, 2.0f));
+
 	// Main loop
 	while (!glfwWindowShouldClose(window))
 	{
@@ -94,24 +101,23 @@ int main()
 		// Activate shader
 		shaderProgram.Activate();
 		
+		camera.Inputs(window);
+		camera.Matrix(45.0f, 0.1f, 100.0f, shaderProgram, "camMatrix");
+
 		// Transforms
-		glm::mat4 model(1.0f);
-		glm::mat4 view(1.0f);
-		glm::mat4 projection(1.0f);
-
-		model = glm::rotate(model, float(glfwGetTime()), glm::vec3(0.0f, 1.0f, 0.0f));
-		view = glm::translate(view, glm::vec3(0.0f, -0.5f, -2.0f));
-		projection = glm::perspective(glm::radians(45.0f), float(WIDTH) / float(HEIGHT), 0.1f, 100.0f);
-
-		// Set matrix uniforms
-		int uniModel = glGetUniformLocation(shaderProgram.ID, "model");
-		glUniformMatrix4fv(uniModel, 1, GL_FALSE, glm::value_ptr(model));
-
-		int uniView = glGetUniformLocation(shaderProgram.ID, "view");
-		glUniformMatrix4fv(uniView, 1, GL_FALSE, glm::value_ptr(view));
-
-		int uniProjection = glGetUniformLocation(shaderProgram.ID, "projection");
-		glUniformMatrix4fv(uniProjection, 1, GL_FALSE, glm::value_ptr(projection));
+		//glm::mat4 model(1.0f);
+		//glm::mat4 view(1.0f);
+		//glm::mat4 projection(1.0f);
+		//model = glm::rotate(model, float(glfwGetTime()), glm::vec3(0.0f, 1.0f, 0.0f));
+		//view = glm::translate(view, glm::vec3(0.0f, -0.5f, -2.0f));
+		//projection = glm::perspective(glm::radians(45.0f), float(WIDTH) / float(HEIGHT), 0.1f, 100.0f);
+		//// Set matrix uniforms
+		//int uniModel = glGetUniformLocation(shaderProgram.ID, "model");
+		//glUniformMatrix4fv(uniModel, 1, GL_FALSE, glm::value_ptr(model));
+		//int uniView = glGetUniformLocation(shaderProgram.ID, "view");
+		//glUniformMatrix4fv(uniView, 1, GL_FALSE, glm::value_ptr(view));
+		//int uniProjection = glGetUniformLocation(shaderProgram.ID, "projection");
+		//glUniformMatrix4fv(uniProjection, 1, GL_FALSE, glm::value_ptr(projection));
 
 		// Set texture to draw
 		image.Bind();
