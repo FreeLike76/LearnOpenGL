@@ -31,7 +31,6 @@ void Camera::Matrix(
 
 void Camera::Inputs(GLFWwindow* window)
 {
-	// Mouse
 	handleMouseInput(window);
 	handleKeyboardInput(window);
 }
@@ -71,8 +70,8 @@ void Camera::handleMouseInput(GLFWwindow* window)
 		double mouseX, mouseY;
 		glfwGetCursorPos(window, &mouseX, &mouseY);
 
-		float rotX = sensitivity * float(height / 2 - mouseY) / height; // *Constants::Time::DeltaTime;
-		float rotY = sensitivity * float(width / 2 - mouseX) / width; // *Constants::Time::DeltaTime;
+		float rotX = sensitivity * float(height / 2 - mouseY) / height;
+		float rotY = sensitivity * float(width / 2 - mouseX) / width;
 
 		// Rotate X
 		glm::vec3 newOrientation = glm::rotate(

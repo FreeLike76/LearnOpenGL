@@ -1,14 +1,20 @@
 #ifndef LOCAL_UTILS_H
 #define LOCAL_UTILS_H
 
-namespace Utils {
-	namespace Constants {
-
+namespace Utils
+{
+	namespace Constants
+	{
 		namespace Screen
 		{
 			constexpr int WIDTH = 800;
 			constexpr int HEIGHT = 600;
 		} // namespace Screen
+
+		namespace Camera
+		{
+			constexpr float SENSITIVITY = 20.0f;
+		} // namespace Camera
 
 		namespace Speed
 		{

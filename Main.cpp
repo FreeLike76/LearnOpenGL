@@ -91,6 +91,7 @@ int main()
 	glEnable(GL_DEPTH_TEST);
 
 	Camera camera(windowWidth, windowHeight, glm::vec3(0.0f, 0.0f, 2.0f));
+	camera.sensitivity = Utils::Constants::Camera::SENSITIVITY;
 
 	// Main loop
 	while (!glfwWindowShouldClose(window))
