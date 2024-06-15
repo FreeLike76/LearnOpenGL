@@ -19,6 +19,9 @@
     <Filter Include="Resource Files\Textures">
       <UniqueIdentifier>{8b21f1d0-b2de-40b1-a3a6-da914f860e40}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\Textures\Planks">
+      <UniqueIdentifier>{6572ff72-30d3-4501-ae86-494d3b705eae}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="glad.c">
@@ -92,6 +95,12 @@
     </Image>
     <Image Include="Assets\Textures\pop_cat.png">
       <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="Assets\Textures\Planks\planks.png">
+      <Filter>Resource Files\Textures\Planks</Filter>
+    </Image>
+    <Image Include="Assets\Textures\Planks\planksSpec.png">
+      <Filter>Resource Files\Textures\Planks</Filter>
     </Image>
   </ItemGroup>
 </Project>

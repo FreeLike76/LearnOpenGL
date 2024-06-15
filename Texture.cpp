@@ -1,11 +1,17 @@
 #include "Texture.h"
 
-Texture::Texture(const char* image, GLenum texType, GLenum slot, GLenum format, GLenum pixelType)
-{
+Texture::Texture(
+	const char* image,
+	GLenum texType,
+	GLuint slot,
+	GLenum format,
+	GLenum pixelType
+) {
 	type = texType;
 	glGenTextures(1, &ID);
 
-	glActiveTexture(slot);
+	this->slot = slot;
+	glActiveTexture(GL_TEXTURE0 + this->slot);
 	glBindTexture(type, ID);
 
 	// xyz -> str
@@ -30,6 +36,7 @@ void Texture::texUnit(Shader& shader, const char* uniform, GLuint unit)
 
 void Texture::Bind()
 {
+	glActiveTexture(GL_TEXTURE0 + this->slot);
 	glBindTexture(type, ID);
 }
 

@@ -14,37 +14,50 @@
 #include "Camera.h"
 #include "Utils.h"
 
+//GLfloat vertices[] = {
+//	// Position				// Color				 // UV			 // Normals
+//	-0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f, 	 0.0f, 0.0f,	 0.0f, -1.0f, 0.0f, // Bottom side
+//	-0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,	 0.0f, 5.0f,	 0.0f, -1.0f, 0.0f, // Bottom side
+//	 0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,	 5.0f, 5.0f,	 0.0f, -1.0f, 0.0f, // Bottom side
+//	 0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f,	 5.0f, 0.0f,	 0.0f, -1.0f, 0.0f, // Bottom side
+//
+//	-0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f, 	 0.0f, 0.0f,	-0.8f, 0.5f,  0.0f, // Left Side
+//	-0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,	 5.0f, 0.0f,	-0.8f, 0.5f,  0.0f, // Left Side
+//	 0.0f, 0.8f,  0.0f,     0.92f, 0.86f, 0.76f,	 2.5f, 5.0f,	-0.8f, 0.5f,  0.0f, // Left Side
+//
+//	-0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,	 5.0f, 0.0f,	 0.0f, 0.5f, -0.8f, // Non-facing side
+//	 0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,	 0.0f, 0.0f,	 0.0f, 0.5f, -0.8f, // Non-facing side
+//	 0.0f, 0.8f,  0.0f,     0.92f, 0.86f, 0.76f,	 2.5f, 5.0f,	 0.0f, 0.5f, -0.8f, // Non-facing side
+//
+//	 0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,	 0.0f, 0.0f,	 0.8f, 0.5f,  0.0f, // Right side
+//	 0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f,	 5.0f, 0.0f,	 0.8f, 0.5f,  0.0f, // Right side
+//	 0.0f, 0.8f,  0.0f,     0.92f, 0.86f, 0.76f,	 2.5f, 5.0f,	 0.8f, 0.5f,  0.0f, // Right side
+//
+//	 0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f,	 5.0f, 0.0f,	 0.0f, 0.5f,  0.8f, // Facing side
+//	-0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f, 	 0.0f, 0.0f,	 0.0f, 0.5f,  0.8f, // Facing side
+//	 0.0f, 0.8f,  0.0f,     0.92f, 0.86f, 0.76f,	 2.5f, 5.0f,	 0.0f, 0.5f,  0.8f  // Facing side
+//};
+//
+//GLuint indices[] = {
+//	0, 1, 2,	// Bottom side
+//	0, 2, 3,	// Bottom side
+//	4, 6, 5,	// Left side
+//	7, 9, 8,	// Non-facing side
+//	10, 12, 11, // Right side
+//	13, 15, 14	// Facing side
+//};
+
 GLfloat vertices[] = {
 	// Position				// Color				 // UV			 // Normals
-	-0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f, 	 0.0f, 0.0f,	 0.0f, -1.0f, 0.0f, // Bottom side
-	-0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,	 0.0f, 5.0f,	 0.0f, -1.0f, 0.0f, // Bottom side
-	 0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,	 5.0f, 5.0f,	 0.0f, -1.0f, 0.0f, // Bottom side
-	 0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f,	 5.0f, 0.0f,	 0.0f, -1.0f, 0.0f, // Bottom side
-
-	-0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f, 	 0.0f, 0.0f,	-0.8f, 0.5f,  0.0f, // Left Side
-	-0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,	 5.0f, 0.0f,	-0.8f, 0.5f,  0.0f, // Left Side
-	 0.0f, 0.8f,  0.0f,     0.92f, 0.86f, 0.76f,	 2.5f, 5.0f,	-0.8f, 0.5f,  0.0f, // Left Side
-
-	-0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,	 5.0f, 0.0f,	 0.0f, 0.5f, -0.8f, // Non-facing side
-	 0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,	 0.0f, 0.0f,	 0.0f, 0.5f, -0.8f, // Non-facing side
-	 0.0f, 0.8f,  0.0f,     0.92f, 0.86f, 0.76f,	 2.5f, 5.0f,	 0.0f, 0.5f, -0.8f, // Non-facing side
-
-	 0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,	 0.0f, 0.0f,	 0.8f, 0.5f,  0.0f, // Right side
-	 0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f,	 5.0f, 0.0f,	 0.8f, 0.5f,  0.0f, // Right side
-	 0.0f, 0.8f,  0.0f,     0.92f, 0.86f, 0.76f,	 2.5f, 5.0f,	 0.8f, 0.5f,  0.0f, // Right side
-
-	 0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f,	 5.0f, 0.0f,	 0.0f, 0.5f,  0.8f, // Facing side
-	-0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f, 	 0.0f, 0.0f,	 0.0f, 0.5f,  0.8f, // Facing side
-	 0.0f, 0.8f,  0.0f,     0.92f, 0.86f, 0.76f,	 2.5f, 5.0f,	 0.0f, 0.5f,  0.8f  // Facing side
+	-1.0f, 0.0f,  1.0f,		0.0f, 0.0f, 0.0f,		0.0f, 0.0f,		0.0f, 1.0f, 0.0f,
+	-1.0f, 0.0f, -1.0f,		0.0f, 0.0f, 0.0f,		0.0f, 1.0f,		0.0f, 1.0f, 0.0f,
+	 1.0f, 0.0f, -1.0f,		0.0f, 0.0f, 0.0f,		1.0f, 1.0f,		0.0f, 1.0f, 0.0f,
+	 1.0f, 0.0f,  1.0f,		0.0f, 0.0f, 0.0f,		1.0f, 0.0f,		0.0f, 1.0f, 0.0f
 };
-
-GLuint indices[] = {
-	0, 1, 2,	// Bottom side
-	0, 2, 3,	// Bottom side
-	4, 6, 5,	// Left side
-	7, 9, 8,	// Non-facing side
-	10, 12, 11, // Right side
-	13, 15, 14	// Facing side
+GLuint indices[] =
+{
+	0, 1, 2,
+	0, 2, 3
 };
 
 GLfloat lightVertices[] = {
@@ -150,8 +163,8 @@ int main()
 
 	Log("Light shader created");
 
-	glm::vec4 lightColor = glm::vec4(1.0f, 0.8f, 0.8f, 1.0f);
-	glm::vec3 lightPos = glm::vec3(0.0, 1.5, 0.5);
+	glm::vec4 lightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	glm::vec3 lightPos = glm::vec3(0.0, 0.5, 0.5);
 	glm::mat4 lightModel = glm::translate(glm::mat4(1.0f), lightPos);
 
 	glm::vec3 pyramidPos = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -186,8 +199,11 @@ int main()
 
 	Log("Objects setup");
 
-	Texture image("Assets/Textures/image.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
-	image.texUnit(shaderProgram, "tex0", 0);
+	//Texture texture("Assets/Textures/texture.png", GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE);
+	Texture texture("Assets/Textures/Planks/planks.png", GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE);
+	texture.texUnit(shaderProgram, "tex0", 0);
+	Texture textureSpecular("Assets/Textures/Planks/planksSpec.png", GL_TEXTURE_2D, 1, GL_RED, GL_UNSIGNED_BYTE);
+	texture.texUnit(shaderProgram, "tex1", 1);
 
 	Log("Texture loaded");
 
@@ -210,9 +226,10 @@ int main()
 		// Pyramid
 		shaderProgram.Activate();
 		camera.Matrix(shaderProgram, "camMatrix");
-		image.Bind();
+		texture.Bind();
+		textureSpecular.Bind();
 		VAO1.Bind();
-		glDrawElements(GL_TRIANGLES, sizeof(indices) / sizeof(GLuint), GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, sizeof(indices) / sizeof(indices[0]), GL_UNSIGNED_INT, 0);
 
 		// Light
 		lightShader.Activate();
@@ -236,7 +253,8 @@ int main()
 	VAO1.Delete();
 	VBO1.Delete();
 	EBO1.Delete();
-	image.Delete();
+	texture.Delete();
+	textureSpecular.Delete();
 	shaderProgram.Delete();
 
 	glfwDestroyWindow(window);
