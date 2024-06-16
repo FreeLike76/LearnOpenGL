@@ -6,13 +6,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "ShaderClass.h"
-#include "VAO.h"
-#include "VBO.h"
-#include "EBO.h"
-#include "Texture.h"
-#include "Camera.h"
 #include "Utils.h"
+#include "Mesh.h"
 
 //GLfloat vertices[] = {
 //	// Position				// Color				 // UV			 // Normals
@@ -47,12 +42,24 @@
 //	13, 15, 14	// Facing side
 //};
 
-GLfloat vertices[] = {
-	// Position				// Color				 // UV			 // Normals
-	-1.0f, 0.0f,  1.0f,		0.0f, 0.0f, 0.0f,		0.0f, 0.0f,		0.0f, 1.0f, 0.0f,
-	-1.0f, 0.0f, -1.0f,		0.0f, 0.0f, 0.0f,		0.0f, 1.0f,		0.0f, 1.0f, 0.0f,
-	 1.0f, 0.0f, -1.0f,		0.0f, 0.0f, 0.0f,		1.0f, 1.0f,		0.0f, 1.0f, 0.0f,
-	 1.0f, 0.0f,  1.0f,		0.0f, 0.0f, 0.0f,		1.0f, 0.0f,		0.0f, 1.0f, 0.0f
+//GLfloat vertices[] = {
+//	// Position				// Color				 // UV			 // Normals
+//	-1.0f, 0.0f,  1.0f,		0.0f, 0.0f, 0.0f,		0.0f, 0.0f,		0.0f, 1.0f, 0.0f,
+//	-1.0f, 0.0f, -1.0f,		0.0f, 0.0f, 0.0f,		0.0f, 1.0f,		0.0f, 1.0f, 0.0f,
+//	 1.0f, 0.0f, -1.0f,		0.0f, 0.0f, 0.0f,		1.0f, 1.0f,		0.0f, 1.0f, 0.0f,
+//	 1.0f, 0.0f,  1.0f,		0.0f, 0.0f, 0.0f,		1.0f, 0.0f,		0.0f, 1.0f, 0.0f
+//};
+//GLuint indices[] =
+//{
+//	0, 1, 2,
+//	0, 2, 3
+//};
+
+Entities::Vertex vertices[] = {
+	Entities::Vertex{ glm::vec3(-1.0f, 0.0f,  1.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(0.0f, 0.0f) },
+	Entities::Vertex{ glm::vec3(-1.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(0.0f, 1.0f) },
+	Entities::Vertex{ glm::vec3(1.0f, 0.0f, -1.0f),  glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(1.0f, 1.0f) },
+	Entities::Vertex{ glm::vec3(1.0f, 0.0f,  1.0f),  glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(1.0f, 0.0f) }
 };
 GLuint indices[] =
 {
@@ -60,18 +67,16 @@ GLuint indices[] =
 	0, 2, 3
 };
 
-GLfloat lightVertices[] = {
-	// Position
-	-0.1f, -0.1f,  0.1f,
-	-0.1f, -0.1f, -0.1f,
-	 0.1f, -0.1f, -0.1f,
-	 0.1f, -0.1f,  0.1f,
-	-0.1f,  0.1f,  0.1f,
-	-0.1f,  0.1f, -0.1f,
-	 0.1f,  0.1f, -0.1f,
-	 0.1f,  0.1f,  0.1f
+Entities::Vertex lightVertices[] = {
+	Entities::Vertex{glm::vec3(-0.1f, -0.1f,  0.1f)},
+	Entities::Vertex{glm::vec3(-0.1f, -0.1f, -0.1f)},
+	Entities::Vertex{glm::vec3(0.1f, -0.1f, -0.1f)},
+	Entities::Vertex{glm::vec3(0.1f, -0.1f,  0.1f)},
+	Entities::Vertex{glm::vec3(-0.1f,  0.1f,  0.1f)},
+	Entities::Vertex{glm::vec3(-0.1f,  0.1f, -0.1f)},
+	Entities::Vertex{glm::vec3(0.1f,  0.1f, -0.1f)},
+	Entities::Vertex{glm::vec3(0.1f,  0.1f,  0.1f)}
 };
-
 GLuint lightIndices[] = {
 	0, 1, 2,
 	0, 2, 3,
@@ -87,89 +92,91 @@ GLuint lightIndices[] = {
 	4, 6, 7
 };
 
-
 void Log(const char* message)
 {
 	std::cout << message << std::endl;
 }
 
-int main()
+void setupGLFW()
 {
-	// Setup
-	glfwInit();
+	// Setup GLFW
+	if (!glfwInit())
+	{
+		Log("Failed to initialize GLFW");
+		exit(-1);
+	}
 
+	// Set OpenGL version to 3.3
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+}
 
-	// Create window
-	int windowWidth = Utils::Constants::Screen::WIDTH;
-	int windowHeight = Utils::Constants::Screen::HEIGHT;
-	GLFWwindow* window = glfwCreateWindow(
-		windowWidth,
-		windowHeight,
-		"OpenGL", NULL, NULL
-	);
-
+GLFWwindow* createWindow(
+	int width,
+	int height,
+	const char* title
+) {
+	GLFWwindow* window = glfwCreateWindow(width, height, title, NULL, NULL);
 	if (window == NULL)
 	{
-		std::cout << "Failed to create GLFW window" << std::endl;
+		Log("Failed to create GLFW window");
 		glfwTerminate();
-		return -1;
+		exit(-1);
 	}
+
+	return window;
+}
+
+int main()
+{
+	Log("GLFW Setup");
+	setupGLFW();
+
+	Log("Creating window");
+	int windowWidth = Utils::Constants::Screen::WIDTH;
+	int windowHeight = Utils::Constants::Screen::HEIGHT;
+	GLFWwindow* window = createWindow(windowWidth, windowHeight, "OpenGL");
 	glfwMakeContextCurrent(window);
 
+	Log("Glad load GL");
 	gladLoadGL();
 	glViewport(0, 0, windowWidth, windowHeight);
 
-	Log("Window created");
+	// TextureType::ToString(TextureType::DIFFUSE)
+	// TextureType::ToString(TextureType::SPECULAR)
+	Log("Create textures");
+	Texture textures[] = {
+		Texture("Assets/Textures/Planks/planks.png", "diffuse", 0, GL_RGBA, GL_UNSIGNED_BYTE),
+		Texture("Assets/Textures/Planks/planksSpec.png", "specular", 1, GL_RED, GL_UNSIGNED_BYTE)
+	};
 
+	Log("Init shader program");
 	Shader shaderProgram("default.vert", "default.frag");
 
-	// Create Vertex Array Object and bind it
-	VAO VAO1;
-	VAO1.Bind();
+	Log("Creating mesh");
+	std::vector <Entities::Vertex> meshFloorVertices(vertices, vertices + sizeof(vertices) / sizeof(vertices[0]));
+	std::vector <GLuint> meshFloorIndices(indices, indices + sizeof(indices) / sizeof(indices[0]));
+	std::vector <Texture> meshTextures(textures, textures + sizeof(textures) / sizeof(textures[0]));
+	Mesh meshFloor(meshFloorVertices, meshFloorIndices, meshTextures);
 
-	// Create Vertex Buffer Object and Element Buffer Object
-	VBO VBO1(vertices, sizeof(vertices));
-	EBO EBO1(indices, sizeof(indices));
-
-	// Link VBO to VAO
-	VAO1.LinkAttrib(VBO1, 0, 3, GL_FLOAT, 11 * sizeof(float), (void*)0);
-	VAO1.LinkAttrib(VBO1, 1, 3, GL_FLOAT, 11 * sizeof(float), (void*)(3 * sizeof(float)));
-	VAO1.LinkAttrib(VBO1, 2, 2, GL_FLOAT, 11 * sizeof(float), (void*)(6 * sizeof(float)));
-	VAO1.LinkAttrib(VBO1, 3, 3, GL_FLOAT, 11 * sizeof(float), (void*)(8 * sizeof(float)));
-
-	// Unbind all to prevent accidentally modifying them
-	VAO1.Unbind();
-	VBO1.Unbind();
-	EBO1.Unbind();
-
-	Log("Shader program created");
-
+	Log("Init light shader program");
 	Shader lightShader("light.vert", "light.frag");
 
-	VAO lightVAO;
-	lightVAO.Bind();
+	Log("Creating light mesh");
+	std::vector<Entities::Vertex> meshLightVertices(lightVertices, lightVertices + sizeof(lightVertices) / sizeof(lightVertices[0]));
+	std::vector<GLuint> meshLightIndices(lightIndices, lightIndices + sizeof(lightIndices) / sizeof(lightIndices[0]));
+	Mesh meshLight(meshLightVertices, meshLightIndices, meshTextures);
 
-	VBO lightVBO(lightVertices, sizeof(lightVertices));
-	EBO lightEBO(lightIndices, sizeof(lightIndices));
-
-	lightVAO.LinkAttrib(lightVBO, 0, 3, GL_FLOAT, 3 * sizeof(GLfloat), (void*)0);
-
-	lightVAO.Unbind();
-	lightEBO.Unbind();
-	lightVBO.Unbind();
-
-	Log("Light shader created");
-
+	// Light setup
 	glm::vec4 lightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-	glm::vec3 lightPos = glm::vec3(0.0, 0.5, 0.5);
+	glm::vec3 lightPos = glm::vec3(0.5f, 0.5f, 0.5f);
 	glm::mat4 lightModel = glm::translate(glm::mat4(1.0f), lightPos);
 
-	glm::vec3 pyramidPos = glm::vec3(0.0f, 0.0f, 0.0f);
-	glm::mat4 pyramidModel = glm::mat4(1.0f);
-	pyramidModel = glm::translate(pyramidModel, pyramidPos);
+	// Object setup
+	glm::vec3 objectPos = glm::vec3(0.0f, 0.0f, 0.0f);
+	glm::mat4 objectModel = glm::mat4(1.0f);
+	objectModel = glm::translate(objectModel, objectPos);
 
 	lightShader.Activate();
 	glUniformMatrix4fv(
@@ -186,7 +193,7 @@ int main()
 	glUniformMatrix4fv(
 		glGetUniformLocation(shaderProgram.ID, "model"),
 		1, GL_FALSE,
-		glm::value_ptr(pyramidModel)
+		glm::value_ptr(objectModel)
 	);
 	glUniform4f(
 		glGetUniformLocation(shaderProgram.ID, "lightColor"),
@@ -197,24 +204,12 @@ int main()
 		lightPos.x, lightPos.y, lightPos.z
 	);
 
-	Log("Objects setup");
-
-	//Texture texture("Assets/Textures/texture.png", GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE);
-	Texture texture("Assets/Textures/Planks/planks.png", GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE);
-	texture.texUnit(shaderProgram, "tex0", 0);
-	Texture textureSpecular("Assets/Textures/Planks/planksSpec.png", GL_TEXTURE_2D, 1, GL_RED, GL_UNSIGNED_BYTE);
-	texture.texUnit(shaderProgram, "tex1", 1);
-
-	Log("Texture loaded");
-
+	Log("Camera creation");
 	Camera camera(windowWidth, windowHeight, glm::vec3(0.0f, 0.0f, 2.0f));
 	camera.sensitivity = Utils::Constants::Camera::SENSITIVITY;
 
-	Log("Camera created");
-
+	Log("Main loop");
 	glEnable(GL_DEPTH_TEST);
-
-	// Main loop
 	while (!glfwWindowShouldClose(window))
 	{
 		glClearColor(0.07f, 0.12f, 0.17f, 1.0f);
@@ -223,24 +218,8 @@ int main()
 		camera.Inputs(window);
 		camera.UpdateMatrix(45.0f, 0.1f, 100.0f);
 
-		// Pyramid
-		shaderProgram.Activate();
-		camera.Matrix(shaderProgram, "camMatrix");
-		texture.Bind();
-		textureSpecular.Bind();
-		VAO1.Bind();
-		glDrawElements(GL_TRIANGLES, sizeof(indices) / sizeof(indices[0]), GL_UNSIGNED_INT, 0);
-
-		// Light
-		lightShader.Activate();
-		camera.Matrix(lightShader, "camMatrix");
-		glUniform3f(
-			glGetUniformLocation(lightShader.ID, "viewPos"),
-			camera.Position.x, camera.Position.y, camera.Position.z
-		);
-
-		lightVAO.Bind();
-		glDrawElements(GL_TRIANGLES, sizeof(lightIndices) / sizeof(GLuint), GL_UNSIGNED_INT, 0);
+		meshFloor.Draw(shaderProgram, camera);
+		meshLight.Draw(lightShader, camera);
 
 		// Swap the back and front buffers
 		glfwSwapBuffers(window);
@@ -250,11 +229,6 @@ int main()
 	}
 
 	// Clean up
-	VAO1.Delete();
-	VBO1.Delete();
-	EBO1.Delete();
-	texture.Delete();
-	textureSpecular.Delete();
 	shaderProgram.Delete();
 
 	glfwDestroyWindow(window);

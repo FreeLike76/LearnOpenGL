@@ -22,6 +22,9 @@
     <Filter Include="Resource Files\Textures\Planks">
       <UniqueIdentifier>{6572ff72-30d3-4501-ae86-494d3b705eae}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Entities">
+      <UniqueIdentifier>{0b0132b1-b8d4-40b7-984c-8edcb5b1886d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="glad.c">
@@ -49,6 +52,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Camera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -87,6 +93,12 @@
     </ClInclude>
     <ClInclude Include="Utils.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Vertex.h">
+      <Filter>Header Files\Entities</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

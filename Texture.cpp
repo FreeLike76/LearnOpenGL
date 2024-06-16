@@ -2,7 +2,7 @@
 
 Texture::Texture(
 	const char* image,
-	GLenum texType,
+	const char* texType,
 	GLuint slot,
 	GLenum format,
 	GLenum pixelType
@@ -12,23 +12,26 @@ Texture::Texture(
 
 	this->slot = slot;
 	glActiveTexture(GL_TEXTURE0 + this->slot);
-	glBindTexture(type, ID);
-
-	// xyz -> str
-	glTexParameteri(type, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(type, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glBindTexture(GL_TEXTURE_2D, ID);
 	
-	glTexParameteri(type, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(type, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	// xyz -> str
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 	readImage(image, format, pixelType);
 
 	// Unbind
-	glBindTexture(type, 0);
+	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-void Texture::texUnit(Shader& shader, const char* uniform, GLuint unit)
-{
+void Texture::texUnit(
+	Shader& shader,
+	const char* uniform,
+	GLuint unit
+) {
 	GLuint texUni = glGetUniformLocation(shader.ID, uniform);
 	shader.Activate();
 	glUniform1i(texUni, unit);
@@ -37,12 +40,12 @@ void Texture::texUnit(Shader& shader, const char* uniform, GLuint unit)
 void Texture::Bind()
 {
 	glActiveTexture(GL_TEXTURE0 + this->slot);
-	glBindTexture(type, ID);
+	glBindTexture(GL_TEXTURE_2D, ID);
 }
 
 void Texture::Unbind()
 {
-	glBindTexture(type, 0);
+	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 void Texture::Delete()
@@ -50,15 +53,18 @@ void Texture::Delete()
 	glDeleteTextures(1, &ID);
 }
 
-void Texture::readImage(const char* image, GLenum format, GLenum pixelType)
-{
+void Texture::readImage(
+	const char* image,
+	GLenum format,
+	GLenum pixelType
+) {
 	int width, height, nrChannels;
 	stbi_set_flip_vertically_on_load(true);
 	unsigned char* data = stbi_load(image, &width, &height, &nrChannels, 0);
 	if (data)
 	{
-		glTexImage2D(type, 0, format, width, height, 0, format, pixelType, data);
-		glGenerateMipmap(type);
+		glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, pixelType, data);
+		glGenerateMipmap(GL_TEXTURE_2D);
 	}
 	else
 	{
