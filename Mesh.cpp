@@ -1,7 +1,7 @@
 #include "Mesh.h"
 
 Mesh::Mesh(
-	std::vector<Entities::Vertex> &vertices,
+	std::vector<Vertex> &vertices,
 	std::vector<GLuint> &indices,
 	std::vector<Texture> &textures
 ) {

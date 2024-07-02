@@ -25,6 +25,7 @@ namespace Utils
 		} // namespace Speed
 
 	} // namespace Constants
+
 } // namespace Utils
 
 #endif // LOCAL_UTILS_H

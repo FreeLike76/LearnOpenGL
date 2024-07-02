@@ -8,6 +8,7 @@
 
 #include "Utils.h"
 #include "Mesh.h"
+#include "Model.h"
 
 //GLfloat vertices[] = {
 //	// Position				// Color				 // UV			 // Normals
@@ -55,11 +56,11 @@
 //	0, 2, 3
 //};
 
-Entities::Vertex vertices[] = {
-	Entities::Vertex{ glm::vec3(-1.0f, 0.0f,  1.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(0.0f, 0.0f) },
-	Entities::Vertex{ glm::vec3(-1.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(0.0f, 1.0f) },
-	Entities::Vertex{ glm::vec3(1.0f, 0.0f, -1.0f),  glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(1.0f, 1.0f) },
-	Entities::Vertex{ glm::vec3(1.0f, 0.0f,  1.0f),  glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(1.0f, 0.0f) }
+Vertex vertices[] = {
+	Vertex{ glm::vec3(-1.0f, 0.0f,  1.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(0.0f, 0.0f) },
+	Vertex{ glm::vec3(-1.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(0.0f, 1.0f) },
+	Vertex{ glm::vec3(1.0f, 0.0f, -1.0f),  glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(1.0f, 1.0f) },
+	Vertex{ glm::vec3(1.0f, 0.0f,  1.0f),  glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(1.0f, 0.0f) }
 };
 GLuint indices[] =
 {
@@ -67,15 +68,15 @@ GLuint indices[] =
 	0, 2, 3
 };
 
-Entities::Vertex lightVertices[] = {
-	Entities::Vertex{glm::vec3(-0.1f, -0.1f,  0.1f)},
-	Entities::Vertex{glm::vec3(-0.1f, -0.1f, -0.1f)},
-	Entities::Vertex{glm::vec3(0.1f, -0.1f, -0.1f)},
-	Entities::Vertex{glm::vec3(0.1f, -0.1f,  0.1f)},
-	Entities::Vertex{glm::vec3(-0.1f,  0.1f,  0.1f)},
-	Entities::Vertex{glm::vec3(-0.1f,  0.1f, -0.1f)},
-	Entities::Vertex{glm::vec3(0.1f,  0.1f, -0.1f)},
-	Entities::Vertex{glm::vec3(0.1f,  0.1f,  0.1f)}
+Vertex lightVertices[] = {
+	Vertex{glm::vec3(-0.1f, -0.1f,  0.1f)},
+	Vertex{glm::vec3(-0.1f, -0.1f, -0.1f)},
+	Vertex{glm::vec3(0.1f, -0.1f, -0.1f)},
+	Vertex{glm::vec3(0.1f, -0.1f,  0.1f)},
+	Vertex{glm::vec3(-0.1f,  0.1f,  0.1f)},
+	Vertex{glm::vec3(-0.1f,  0.1f, -0.1f)},
+	Vertex{glm::vec3(0.1f,  0.1f, -0.1f)},
+	Vertex{glm::vec3(0.1f,  0.1f,  0.1f)}
 };
 GLuint lightIndices[] = {
 	0, 1, 2,
@@ -147,35 +148,44 @@ int main()
 	// TextureType::ToString(TextureType::SPECULAR)
 	Log("Create textures");
 	Texture textures[] = {
-		Texture("Assets/Textures/Planks/planks.png", "diffuse", 0, GL_RGBA, GL_UNSIGNED_BYTE),
-		Texture("Assets/Textures/Planks/planksSpec.png", "specular", 1, GL_RED, GL_UNSIGNED_BYTE)
+		Texture("Assets/Textures/Planks/planks.png", "diffuse", 0),
+		Texture("Assets/Textures/Planks/planksSpec.png", "specular", 1)
 	};
 
 	Log("Init shader program");
 	Shader shaderProgram("default.vert", "default.frag");
 
 	Log("Creating mesh");
-	std::vector <Entities::Vertex> meshFloorVertices(vertices, vertices + sizeof(vertices) / sizeof(vertices[0]));
+	std::vector <Vertex> meshFloorVertices(vertices, vertices + sizeof(vertices) / sizeof(vertices[0]));
 	std::vector <GLuint> meshFloorIndices(indices, indices + sizeof(indices) / sizeof(indices[0]));
 	std::vector <Texture> meshTextures(textures, textures + sizeof(textures) / sizeof(textures[0]));
-	Mesh meshFloor(meshFloorVertices, meshFloorIndices, meshTextures);
+
+
+	Model model("Assets/Models/bunny/scene.gltf");
+	//Mesh meshFloor(meshFloorVertices, meshFloorIndices, meshTextures);
+	Mesh meshFloor = model.Meshes[0];
 
 	Log("Init light shader program");
 	Shader lightShader("light.vert", "light.frag");
 
 	Log("Creating light mesh");
-	std::vector<Entities::Vertex> meshLightVertices(lightVertices, lightVertices + sizeof(lightVertices) / sizeof(lightVertices[0]));
+	std::vector<Vertex> meshLightVertices(lightVertices, lightVertices + sizeof(lightVertices) / sizeof(lightVertices[0]));
 	std::vector<GLuint> meshLightIndices(lightIndices, lightIndices + sizeof(lightIndices) / sizeof(lightIndices[0]));
 	Mesh meshLight(meshLightVertices, meshLightIndices, meshTextures);
 
 	// Light setup
 	glm::vec4 lightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+
+	glm::mat4 lightModel = glm::mat4(1.0f);
 	glm::vec3 lightPos = glm::vec3(0.5f, 0.5f, 0.5f);
-	glm::mat4 lightModel = glm::translate(glm::mat4(1.0f), lightPos);
+	lightModel = glm::translate(lightModel, lightPos);
 
 	// Object setup
-	glm::vec3 objectPos = glm::vec3(0.0f, 0.0f, 0.0f);
 	glm::mat4 objectModel = glm::mat4(1.0f);
+	glm::vec3 objectPos = glm::vec3(0.0f, 0.0f, 0.0f);
+	glm::vec3 objectScale = glm::vec3(2.0f, 2.0f, 2.0f);
+	objectModel = glm::scale(objectModel, objectScale);
+	objectModel = glm::rotate(objectModel, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 	objectModel = glm::translate(objectModel, objectPos);
 
 	lightShader.Activate();
@@ -207,6 +217,7 @@ int main()
 	Log("Camera creation");
 	Camera camera(windowWidth, windowHeight, glm::vec3(0.0f, 0.0f, 2.0f));
 	camera.sensitivity = Utils::Constants::Camera::SENSITIVITY;
+
 
 	Log("Main loop");
 	glEnable(GL_DEPTH_TEST);

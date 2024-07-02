@@ -32,15 +32,20 @@ public:
 	const char* type;
 	GLuint slot;
 
-	Texture(const char* image, const char* texType, GLuint slot, GLenum format, GLenum pixelType);
+	Texture(const unsigned char* data, int width, int height, int nChannels, const char* texType, GLuint slot);
+	Texture(const char* filePath, const char* texType, GLuint slot);
 
 	void texUnit(Shader& shader, const char* uniform, GLuint unit);
 	void Bind();
 	void Unbind();
 	void Delete();
 
+protected:
+	void setupGLTexture(const char* texType, GLuint slot);
+
 private:
-	void readImage(const char* image, GLenum format, GLenum pixelType);
+	void generateTexture(const unsigned char* data, int width, int height, int nChannels, GLenum pixelType = GL_UNSIGNED_BYTE);
+	void readImage(const char* filePath, GLenum pixelType = GL_UNSIGNED_BYTE);
 };
 
 #endif

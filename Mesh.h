@@ -16,14 +16,14 @@
 class Mesh
 {
 public:
-	std::vector <Entities::Vertex> vertices;
+	std::vector <Vertex> vertices;
 	std::vector <GLuint> indices;
 	std::vector <Texture> textures;
 
 	VAO VAO;
 
 	Mesh(
-		std::vector <Entities::Vertex> &vertices,
+		std::vector <Vertex> &vertices,
 		std::vector <GLuint> &indices,
 		std::vector <Texture> &textures
 	);
