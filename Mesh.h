@@ -28,7 +28,11 @@ public:
 		std::vector <Texture> &textures
 	);
 	
-	void Draw(Shader& shader, Camera& camera);
+	void Draw(
+		Shader& shader,
+		Camera& camera,
+		glm::mat4 matrix = glm::mat4(1.0f)
+	);
 
 protected:
 	//VBO VBO;

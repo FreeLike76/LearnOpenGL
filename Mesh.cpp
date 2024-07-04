@@ -12,8 +12,11 @@ Mesh::Mesh(
 	setupMesh();
 }
 
-void Mesh::Draw(Shader& shader, Camera& camera)
-{
+void Mesh::Draw(
+	Shader& shader,
+	Camera& camera,
+	glm::mat4 matrix
+) {
 	// Bind
 	shader.Activate();
 	VAO.Bind();
@@ -38,10 +41,18 @@ void Mesh::Draw(Shader& shader, Camera& camera)
 
 	// Set up view
 	glUniform3f(
-		glGetUniformLocation(shader.ID, "viewPos"),
+		glGetUniformLocation(shader.ID, "camPos"),
 		camera.Position.x, camera.Position.y, camera.Position.z
 	);
 	camera.Matrix(shader, "camMatrix");
+
+	// Set up model
+	glUniformMatrix4fv(
+		glGetUniformLocation(shader.ID, "model"),
+		1,
+		GL_FALSE,
+		glm::value_ptr(matrix)
+	);
 
 	// Draw
 	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);

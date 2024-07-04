@@ -7,9 +7,10 @@ in vec2 texCoord;
 
 uniform sampler2D diffuse0;
 uniform sampler2D specular0;
+
 uniform vec4 lightColor;
 uniform vec3 lightPos;
-uniform vec3 viewPos;
+uniform vec3 camPos;
 
 out vec4 FragColor;
 
@@ -34,7 +35,7 @@ vec4 pointLight(
 	//diffuse *= attenuation;
 
 	// Specular
-	vec3 viewDir = normalize(viewPos - vPos);
+	vec3 viewDir = normalize(camPos - vPos);
 	vec3 reflectDir = reflect(-lightDir, normal);
 	float specular = specularMult * pow(max(dot(viewDir, reflectDir), 0.0f), 16);
 	//specular *= attenuation;

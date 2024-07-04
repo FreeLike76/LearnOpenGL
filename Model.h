@@ -20,13 +20,22 @@ public:
 	~Model();
 
 	std::vector<Mesh> Meshes;
+	std::vector<glm::mat4> Transforms;
 	std::vector<Texture> Textures;
 
-	void Draw(Shader& shader);
+	void Draw(Shader& shader, Camera& camera);
 
 protected:
 	void LoadModel();
-	Mesh LoadMesh(tinygltf::Model& model, int meshId);
+	void LoadNode(
+		tinygltf::Model& model,
+		int nodeIdx,
+		const glm::mat4& parentTransform = glm::mat4(1.0f)
+	);
+	Mesh LoadMesh(
+		tinygltf::Model& model,
+		int meshId
+	);
 
 private:
 	std::string filePath;

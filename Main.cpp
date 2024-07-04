@@ -161,9 +161,11 @@ int main()
 	std::vector <Texture> meshTextures(textures, textures + sizeof(textures) / sizeof(textures[0]));
 
 
-	Model model("Assets/Models/bunny/scene.gltf");
+	//Model model("Assets/Models/bunny/scene.gltf");
+	Model model("Assets/Models/map/scene.gltf");
+
 	//Mesh meshFloor(meshFloorVertices, meshFloorIndices, meshTextures);
-	Mesh meshFloor = model.Meshes[0];
+	//Mesh meshFloor = model.Meshes[0];
 
 	Log("Init light shader program");
 	Shader lightShader("light.vert", "light.frag");
@@ -177,16 +179,16 @@ int main()
 	glm::vec4 lightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
 	glm::mat4 lightModel = glm::mat4(1.0f);
-	glm::vec3 lightPos = glm::vec3(0.5f, 0.5f, 0.5f);
+	glm::vec3 lightPos = glm::vec3(0.5f, 5.0f, 0.5f);
 	lightModel = glm::translate(lightModel, lightPos);
 
 	// Object setup
 	glm::mat4 objectModel = glm::mat4(1.0f);
-	glm::vec3 objectPos = glm::vec3(0.0f, 0.0f, 0.0f);
-	glm::vec3 objectScale = glm::vec3(2.0f, 2.0f, 2.0f);
-	objectModel = glm::scale(objectModel, objectScale);
-	objectModel = glm::rotate(objectModel, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-	objectModel = glm::translate(objectModel, objectPos);
+	//glm::vec3 objectPos = glm::vec3(0.0f, 0.0f, 0.0f);
+	//glm::vec3 objectScale = glm::vec3(2.0f, 2.0f, 2.0f);
+	//objectModel = glm::scale(objectModel, objectScale);
+	//objectModel = glm::rotate(objectModel, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+	//objectModel = glm::translate(objectModel, objectPos);
 
 	lightShader.Activate();
 	glUniformMatrix4fv(
@@ -218,7 +220,6 @@ int main()
 	Camera camera(windowWidth, windowHeight, glm::vec3(0.0f, 0.0f, 2.0f));
 	camera.sensitivity = Utils::Constants::Camera::SENSITIVITY;
 
-
 	Log("Main loop");
 	glEnable(GL_DEPTH_TEST);
 	while (!glfwWindowShouldClose(window))
@@ -229,7 +230,8 @@ int main()
 		camera.Inputs(window);
 		camera.UpdateMatrix(45.0f, 0.1f, 100.0f);
 
-		meshFloor.Draw(shaderProgram, camera);
+		//meshFloor.Draw(shaderProgram, camera);
+		model.Draw(shaderProgram, camera);
 		meshLight.Draw(lightShader, camera);
 
 		// Swap the back and front buffers

@@ -75,6 +75,16 @@ Model::~Model()
 	Textures.clear();
 }
 
+void Model::Draw(
+	Shader& shader,
+	Camera& camera
+) {
+	for (size_t i = 0; i < Meshes.size(); i++)
+	{
+		Meshes[i].Draw(shader, camera, Transforms[i]);
+	}
+}
+
 void Model::LoadModel()
 {
 	tinygltf::Model model;
@@ -99,15 +109,60 @@ void Model::LoadModel()
 	Textures.clear();
 	Textures = LoadTextures(model);
 	
-	// TODO: Recursive function for nodes
-	Meshes.clear();
-	for (size_t nodeId = 0; nodeId < model.nodes.size(); nodeId++)
-	{
-		const tinygltf::Node node = model.nodes[nodeId];
-		if (node.mesh == -1) continue;
+	LoadNode(model, 0);
+}
 
+glm::mat4 GetNodeTransform(const tinygltf::Node& node)
+{
+	if (node.matrix.size() == 16)
+		return glm::make_mat4(node.matrix.data());
+	
+	glm::mat4 translation = glm::mat4(1.0f);
+	if (node.translation.size() == 3)
+	{
+		glm::vec3 translationVec = glm::make_vec3(node.translation.data());
+		translation = glm::translate(translation, translationVec);
+	}
+
+	glm::mat4 rotation = glm::mat4(1.0f);
+	if (node.rotation.size() == 4)
+	{
+		glm::quat rotationVec = glm::make_quat(node.rotation.data());
+		rotation = glm::mat4_cast(rotationVec);
+	}
+
+	glm::mat4 scale = glm::mat4(1.0f);
+	if (node.scale.size() == 3)
+	{
+		glm::vec3 scaleVec = glm::make_vec3(node.scale.data());
+		scale = glm::scale(scale, scaleVec);
+	}
+
+	return translation * rotation * scale;
+	
+}
+
+void Model::LoadNode(
+	tinygltf::Model& model,
+	int nodeIdx,
+	const glm::mat4& parentTransform
+) {
+	const tinygltf::Node node = model.nodes[nodeIdx];
+	glm::mat4 transform = GetNodeTransform(node);
+	glm::mat4 localTransform = parentTransform * transform;
+
+	// Load this node mesh
+	if (node.mesh != -1)
+	{
 		Mesh mesh = LoadMesh(model, node.mesh);
 		Meshes.push_back(mesh);
+		Transforms.push_back(localTransform);
+	}
+
+	// Load children
+	for (int childIdx : node.children)
+	{
+		LoadNode(model, childIdx, localTransform);
 	}
 }
 

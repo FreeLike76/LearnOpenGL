@@ -20,6 +20,10 @@ void main()
 	gl_Position = camMatrix * worldPos;
 	vPos = worldPos.xyz;
 	color = aColor;
-	texCoord = aTex;
+	
+	//texCoord = aTex;
+	//texCoord = vec2(aTex.x, 1.0 - aTex.y);
+	texCoord = mat2(0.0, -1.0, 1.0, 0.0) * aTex;
+
 	Normal = aNormal;
 }
