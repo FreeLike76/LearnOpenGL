@@ -156,16 +156,13 @@ int main()
 	Shader shaderProgram("default.vert", "default.frag");
 
 	Log("Creating mesh");
-	std::vector <Vertex> meshFloorVertices(vertices, vertices + sizeof(vertices) / sizeof(vertices[0]));
-	std::vector <GLuint> meshFloorIndices(indices, indices + sizeof(indices) / sizeof(indices[0]));
-	std::vector <Texture> meshTextures(textures, textures + sizeof(textures) / sizeof(textures[0]));
-
-
-	//Model model("Assets/Models/bunny/scene.gltf");
-	Model model("Assets/Models/map/scene.gltf");
-
+	//std::vector <Vertex> meshFloorVertices(vertices, vertices + sizeof(vertices) / sizeof(vertices[0]));
+	//std::vector <GLuint> meshFloorIndices(indices, indices + sizeof(indices) / sizeof(indices[0]));
+	//std::vector <Texture> meshTextures(textures, textures + sizeof(textures) / sizeof(textures[0]));
 	//Mesh meshFloor(meshFloorVertices, meshFloorIndices, meshTextures);
-	//Mesh meshFloor = model.Meshes[0];
+
+	Model modelBunny("Assets/Models/bunny/scene.gltf");
+	//Model modelMap("Assets/Models/map/scene.gltf");
 
 	Log("Init light shader program");
 	Shader lightShader("light.vert", "light.frag");
@@ -173,17 +170,18 @@ int main()
 	Log("Creating light mesh");
 	std::vector<Vertex> meshLightVertices(lightVertices, lightVertices + sizeof(lightVertices) / sizeof(lightVertices[0]));
 	std::vector<GLuint> meshLightIndices(lightIndices, lightIndices + sizeof(lightIndices) / sizeof(lightIndices[0]));
-	Mesh meshLight(meshLightVertices, meshLightIndices, meshTextures);
+	std::vector <Texture> mesLighthTextures;
+	Mesh meshLight(meshLightVertices, meshLightIndices, mesLighthTextures);
 
 	// Light setup
 	glm::vec4 lightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
 	glm::mat4 lightModel = glm::mat4(1.0f);
-	glm::vec3 lightPos = glm::vec3(0.5f, 5.0f, 0.5f);
+	glm::vec3 lightPos = glm::vec3(0.5f, 1.0f, 0.5f);
 	lightModel = glm::translate(lightModel, lightPos);
 
 	// Object setup
-	glm::mat4 objectModel = glm::mat4(1.0f);
+	//glm::mat4 objectModel = glm::mat4(1.0f);
 	//glm::vec3 objectPos = glm::vec3(0.0f, 0.0f, 0.0f);
 	//glm::vec3 objectScale = glm::vec3(2.0f, 2.0f, 2.0f);
 	//objectModel = glm::scale(objectModel, objectScale);
@@ -191,22 +189,16 @@ int main()
 	//objectModel = glm::translate(objectModel, objectPos);
 
 	lightShader.Activate();
-	glUniformMatrix4fv(
-		glGetUniformLocation(lightShader.ID, "model"),
-		1, GL_FALSE,
-		glm::value_ptr(lightModel)
-	);
 	glUniform4f(
 		glGetUniformLocation(lightShader.ID, "lightColor"),
 		lightColor.x, lightColor.y, lightColor.z, lightColor.w
 	);
-	
-	shaderProgram.Activate();
-	glUniformMatrix4fv(
-		glGetUniformLocation(shaderProgram.ID, "model"),
-		1, GL_FALSE,
-		glm::value_ptr(objectModel)
+	glUniform3f(
+		glGetUniformLocation(lightShader.ID, "lightPos"),
+		lightPos.x, lightPos.y, lightPos.z
 	);
+
+	shaderProgram.Activate();
 	glUniform4f(
 		glGetUniformLocation(shaderProgram.ID, "lightColor"),
 		lightColor.x, lightColor.y, lightColor.z, lightColor.w
@@ -230,9 +222,10 @@ int main()
 		camera.Inputs(window);
 		camera.UpdateMatrix(45.0f, 0.1f, 100.0f);
 
+		modelBunny.Draw(shaderProgram, camera);
+		//modelMap.Draw(shaderProgram, camera);
 		//meshFloor.Draw(shaderProgram, camera);
-		model.Draw(shaderProgram, camera);
-		meshLight.Draw(lightShader, camera);
+		meshLight.Draw(lightShader, camera, lightModel);
 
 		// Swap the back and front buffers
 		glfwSwapBuffers(window);
@@ -249,18 +242,3 @@ int main()
 
 	return 0;
 }
-
-// Transforms
-//glm::mat4 model(1.0f);
-//glm::mat4 view(1.0f);
-//glm::mat4 projection(1.0f);
-//model = glm::rotate(model, float(glfwGetTime()), glm::vec3(0.0f, 1.0f, 0.0f));
-//view = glm::translate(view, glm::vec3(0.0f, -0.5f, -2.0f));
-//projection = glm::perspective(glm::radians(45.0f), float(WIDTH) / float(HEIGHT), 0.1f, 100.0f);
-//// Set matrix uniforms
-//int uniModel = glGetUniformLocation(shaderProgram.ID, "model");
-//glUniformMatrix4fv(uniModel, 1, GL_FALSE, glm::value_ptr(model));
-//int uniView = glGetUniformLocation(shaderProgram.ID, "view");
-//glUniformMatrix4fv(uniView, 1, GL_FALSE, glm::value_ptr(view));
-//int uniProjection = glGetUniformLocation(shaderProgram.ID, "projection");
-//glUniformMatrix4fv(uniProjection, 1, GL_FALSE, glm::value_ptr(projection));
