@@ -14,6 +14,9 @@ uniform vec3 camPos;
 
 out vec4 FragColor;
 
+float zNear = 0.1f;
+float zFar = 100.0f;
+
 vec4 pointLight(
 	float ambient = 0.2f,
 	float specularMult = 1.0f
@@ -46,12 +49,22 @@ vec4 pointLight(
 	return lightColor * (texColor * (ambient + diffuse) + texSpecular * specular);
 }
 
+float linearizeDepth(float depth) {
+	return (2.0f * zNear * zFar) / (zFar + zNear -(depth * 2.0 - 1.0) * (zFar - zNear));
+}
+
 void main()
 {
 	float ambient = 0.2f;
 	float specularMult = 1.0f;
-	FragColor = pointLight(ambient, specularMult);
+	//FragColor = pointLight(ambient, specularMult);
 
 	// Normal mapping
-	//FragColor = vec4(normal, 1.0f);
+	// FragColor = vec4(Normal, 1.0f);
+
+	// Depth mapping
+	float depth = gl_FragCoord.z;
+	float linearDepth = linearizeDepth(depth);
+	float normalizedDepth = linearDepth / zFar;
+	FragColor = vec4(vec3(normalizedDepth), 1.0f);
 }

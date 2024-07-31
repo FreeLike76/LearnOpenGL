@@ -153,7 +153,8 @@ int main()
 	};
 
 	Log("Init shader program");
-	Shader shaderProgram("default.vert", "default.frag");
+	//Shader shaderProgram("Assets/Shaders/Default/default.vert", "Assets/Shaders/Default/default.frag");
+	Shader shaderProgram("Assets/Shaders/Depth/depth.vert", "Assets/Shaders/Depth/depth.frag");
 
 	Log("Creating mesh");
 	//std::vector <Vertex> meshFloorVertices(vertices, vertices + sizeof(vertices) / sizeof(vertices[0]));
@@ -161,11 +162,11 @@ int main()
 	//std::vector <Texture> meshTextures(textures, textures + sizeof(textures) / sizeof(textures[0]));
 	//Mesh meshFloor(meshFloorVertices, meshFloorIndices, meshTextures);
 
-	Model modelBunny("Assets/Models/bunny/scene.gltf");
-	//Model modelMap("Assets/Models/map/scene.gltf");
+	//Model modelGTLF("Assets/Models/bunny/scene.gltf");
+	Model modelGTLF("Assets/Models/map/scene.gltf");
 
 	Log("Init light shader program");
-	Shader lightShader("light.vert", "light.frag");
+	Shader lightShader("Assets/Shaders/Light/light.vert", "Assets/Shaders/Light/light.frag");
 
 	Log("Creating light mesh");
 	std::vector<Vertex> meshLightVertices(lightVertices, lightVertices + sizeof(lightVertices) / sizeof(lightVertices[0]));
@@ -212,17 +213,39 @@ int main()
 	Camera camera(windowWidth, windowHeight, glm::vec3(0.0f, 0.0f, 2.0f));
 	camera.sensitivity = Utils::Constants::Camera::SENSITIVITY;
 
-	Log("Main loop");
+	Log("Configuration");
+	// Depth testing
 	glEnable(GL_DEPTH_TEST);
+	// Occlusion culling
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
+	glFrontFace(GL_CCW);
+
+	// Vsync off
+	// glfwSwapInterval(0);
+
+	// Frame counter
+	double timePrev = glfwGetTime();
+	double timeCur = 0.0;
+
+	Log("Main loop");
 	while (!glfwWindowShouldClose(window))
 	{
+		// Frame time calculation
+		timeCur = glfwGetTime();
+		float frameTime = timeCur - timePrev;
+		timePrev = timeCur;
+		glfwSetWindowTitle(window, ("OpenGL - Frame time: " + std::to_string(frameTime)).c_str());
+
+		// Reset buffers
 		glClearColor(0.07f, 0.12f, 0.17f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+		// Handle input
 		camera.Inputs(window);
 		camera.UpdateMatrix(45.0f, 0.1f, 100.0f);
 
-		modelBunny.Draw(shaderProgram, camera);
+		modelGTLF.Draw(shaderProgram, camera);
 		//modelMap.Draw(shaderProgram, camera);
 		//meshFloor.Draw(shaderProgram, camera);
 		meshLight.Draw(lightShader, camera, lightModel);

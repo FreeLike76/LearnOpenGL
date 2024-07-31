@@ -25,6 +25,15 @@
     <Filter Include="Header Files\Entities">
       <UniqueIdentifier>{0b0132b1-b8d4-40b7-984c-8edcb5b1886d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\Shaders\Default">
+      <UniqueIdentifier>{3982390f-9e2d-466c-a967-4af26c4fb936}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Shaders\Light">
+      <UniqueIdentifier>{9618d874-f141-4a1d-83a3-b212b2b5728a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Shaders\Depth">
+      <UniqueIdentifier>{2f196944-3c8f-4d97-9c0c-cb450b09d5ac}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="glad.c">
@@ -63,20 +72,6 @@
     <ClCompile Include="tiny_gltf.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="default.vert">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="default.frag">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="light.frag">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="light.vert">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ShaderClass.h">
@@ -123,5 +118,25 @@
     <Image Include="Assets\Textures\Planks\planksSpec.png">
       <Filter>Resource Files\Textures\Planks</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Assets\Shaders\Default\default.frag">
+      <Filter>Resource Files\Shaders\Default</Filter>
+    </None>
+    <None Include="Assets\Shaders\Default\default.vert">
+      <Filter>Resource Files\Shaders\Default</Filter>
+    </None>
+    <None Include="Assets\Shaders\Light\light.frag">
+      <Filter>Resource Files\Shaders\Light</Filter>
+    </None>
+    <None Include="Assets\Shaders\Light\light.vert">
+      <Filter>Resource Files\Shaders\Light</Filter>
+    </None>
+    <None Include="Assets\Shaders\Depth\depth.frag">
+      <Filter>Resource Files\Shaders\Depth</Filter>
+    </None>
+    <None Include="Assets\Shaders\Depth\depth.vert">
+      <Filter>Resource Files\Shaders\Depth</Filter>
+    </None>
   </ItemGroup>
 </Project>
