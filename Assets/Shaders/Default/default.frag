@@ -35,13 +35,11 @@ vec4 pointLight(
 	// Diffuse
 	vec3 normal = normalize(Normal);
 	float diffuse = max(dot(normal, lightDir), 0.0f);
-	//diffuse *= attenuation;
 
 	// Specular
 	vec3 viewDir = normalize(camPos - vPos);
 	vec3 reflectDir = reflect(-lightDir, normal);
 	float specular = specularMult * pow(max(dot(viewDir, reflectDir), 0.0f), 16);
-	//specular *= attenuation;
 
 	// Final color
 	vec4 texColor = texture(diffuse0, texCoord);
@@ -49,22 +47,12 @@ vec4 pointLight(
 	return lightColor * (texColor * (ambient + diffuse) + texSpecular * specular);
 }
 
-float linearizeDepth(float depth) {
-	return (2.0f * zNear * zFar) / (zFar + zNear -(depth * 2.0 - 1.0) * (zFar - zNear));
-}
-
 void main()
 {
 	float ambient = 0.2f;
 	float specularMult = 1.0f;
-	//FragColor = pointLight(ambient, specularMult);
+	FragColor = pointLight(ambient, specularMult);
 
 	// Normal mapping
 	// FragColor = vec4(Normal, 1.0f);
-
-	// Depth mapping
-	float depth = gl_FragCoord.z;
-	float linearDepth = linearizeDepth(depth);
-	float normalizedDepth = linearDepth / zFar;
-	FragColor = vec4(vec3(normalizedDepth), 1.0f);
 }

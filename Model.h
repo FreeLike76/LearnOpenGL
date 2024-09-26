@@ -16,6 +16,7 @@
 class Model
 {
 public:
+	Model() {};
 	Model(std::string filePath);
 	~Model();
 

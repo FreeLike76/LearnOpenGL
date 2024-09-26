@@ -144,8 +144,6 @@ int main()
 	gladLoadGL();
 	glViewport(0, 0, windowWidth, windowHeight);
 
-	// TextureType::ToString(TextureType::DIFFUSE)
-	// TextureType::ToString(TextureType::SPECULAR)
 	Log("Create textures");
 	Texture textures[] = {
 		Texture("Assets/Textures/Planks/planks.png", "diffuse", 0),
@@ -153,17 +151,17 @@ int main()
 	};
 
 	Log("Init shader program");
-	//Shader shaderProgram("Assets/Shaders/Default/default.vert", "Assets/Shaders/Default/default.frag");
-	Shader shaderProgram("Assets/Shaders/Depth/depth.vert", "Assets/Shaders/Depth/depth.frag");
+	Shader shaderProgram("Assets/Shaders/Default/default.vert", "Assets/Shaders/Default/default.frag");
+	// Shader shaderProgram("Assets/Shaders/Depth/depth.vert", "Assets/Shaders/Depth/depth.frag");
 
 	Log("Creating mesh");
-	//std::vector <Vertex> meshFloorVertices(vertices, vertices + sizeof(vertices) / sizeof(vertices[0]));
-	//std::vector <GLuint> meshFloorIndices(indices, indices + sizeof(indices) / sizeof(indices[0]));
-	//std::vector <Texture> meshTextures(textures, textures + sizeof(textures) / sizeof(textures[0]));
-	//Mesh meshFloor(meshFloorVertices, meshFloorIndices, meshTextures);
+	std::vector <Vertex> meshFloorVertices(vertices, vertices + sizeof(vertices) / sizeof(vertices[0]));
+	std::vector <GLuint> meshFloorIndices(indices, indices + sizeof(indices) / sizeof(indices[0]));
+	std::vector <Texture> meshTextures(textures, textures + sizeof(textures) / sizeof(textures[0]));
+	Mesh meshFloor(meshFloorVertices, meshFloorIndices, meshTextures);
 
-	//Model modelGTLF("Assets/Models/bunny/scene.gltf");
-	Model modelGTLF("Assets/Models/map/scene.gltf");
+	Model modelGTLF("Assets/Models/bunny/scene.gltf");
+	//Model modelGTLF("Assets/Models/map/scene.gltf");
 
 	Log("Init light shader program");
 	Shader lightShader("Assets/Shaders/Light/light.vert", "Assets/Shaders/Light/light.frag");
@@ -171,24 +169,14 @@ int main()
 	Log("Creating light mesh");
 	std::vector<Vertex> meshLightVertices(lightVertices, lightVertices + sizeof(lightVertices) / sizeof(lightVertices[0]));
 	std::vector<GLuint> meshLightIndices(lightIndices, lightIndices + sizeof(lightIndices) / sizeof(lightIndices[0]));
-	std::vector <Texture> mesLighthTextures;
-	Mesh meshLight(meshLightVertices, meshLightIndices, mesLighthTextures);
+	std::vector <Texture> meshLighthTextures;
+	Mesh meshLight(meshLightVertices, meshLightIndices, meshLighthTextures);
 
-	// Light setup
 	glm::vec4 lightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-
 	glm::mat4 lightModel = glm::mat4(1.0f);
 	glm::vec3 lightPos = glm::vec3(0.5f, 1.0f, 0.5f);
 	lightModel = glm::translate(lightModel, lightPos);
-
-	// Object setup
-	//glm::mat4 objectModel = glm::mat4(1.0f);
-	//glm::vec3 objectPos = glm::vec3(0.0f, 0.0f, 0.0f);
-	//glm::vec3 objectScale = glm::vec3(2.0f, 2.0f, 2.0f);
-	//objectModel = glm::scale(objectModel, objectScale);
-	//objectModel = glm::rotate(objectModel, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-	//objectModel = glm::translate(objectModel, objectPos);
-
+	
 	lightShader.Activate();
 	glUniform4f(
 		glGetUniformLocation(lightShader.ID, "lightColor"),
@@ -214,12 +202,12 @@ int main()
 	camera.sensitivity = Utils::Constants::Camera::SENSITIVITY;
 
 	Log("Configuration");
-	// Depth testing
 	glEnable(GL_DEPTH_TEST);
+
 	// Occlusion culling
-	glEnable(GL_CULL_FACE);
-	glCullFace(GL_BACK);
-	glFrontFace(GL_CCW);
+	// glEnable(GL_CULL_FACE);
+	// glCullFace(GL_FRONT);
+	// glFrontFace(GL_CW);
 
 	// Vsync off
 	// glfwSwapInterval(0);
@@ -246,8 +234,7 @@ int main()
 		camera.UpdateMatrix(45.0f, 0.1f, 100.0f);
 
 		modelGTLF.Draw(shaderProgram, camera);
-		//modelMap.Draw(shaderProgram, camera);
-		//meshFloor.Draw(shaderProgram, camera);
+		meshFloor.Draw(shaderProgram, camera);
 		meshLight.Draw(lightShader, camera, lightModel);
 
 		// Swap the back and front buffers
