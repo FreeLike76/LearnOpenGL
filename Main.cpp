@@ -2,98 +2,241 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#include "ShaderClass.h"
-#include "VAO.h"
-#include "VBO.h"
-#include "EBO.h"
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
-int main()
+#include "Utils.h"
+#include "Mesh.h"
+#include "Model.h"
+
+//GLfloat vertices[] = {
+//	// Position				// Color				 // UV			 // Normals
+//	-0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f, 	 0.0f, 0.0f,	 0.0f, -1.0f, 0.0f, // Bottom side
+//	-0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,	 0.0f, 5.0f,	 0.0f, -1.0f, 0.0f, // Bottom side
+//	 0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,	 5.0f, 5.0f,	 0.0f, -1.0f, 0.0f, // Bottom side
+//	 0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f,	 5.0f, 0.0f,	 0.0f, -1.0f, 0.0f, // Bottom side
+//
+//	-0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f, 	 0.0f, 0.0f,	-0.8f, 0.5f,  0.0f, // Left Side
+//	-0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,	 5.0f, 0.0f,	-0.8f, 0.5f,  0.0f, // Left Side
+//	 0.0f, 0.8f,  0.0f,     0.92f, 0.86f, 0.76f,	 2.5f, 5.0f,	-0.8f, 0.5f,  0.0f, // Left Side
+//
+//	-0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,	 5.0f, 0.0f,	 0.0f, 0.5f, -0.8f, // Non-facing side
+//	 0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,	 0.0f, 0.0f,	 0.0f, 0.5f, -0.8f, // Non-facing side
+//	 0.0f, 0.8f,  0.0f,     0.92f, 0.86f, 0.76f,	 2.5f, 5.0f,	 0.0f, 0.5f, -0.8f, // Non-facing side
+//
+//	 0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,	 0.0f, 0.0f,	 0.8f, 0.5f,  0.0f, // Right side
+//	 0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f,	 5.0f, 0.0f,	 0.8f, 0.5f,  0.0f, // Right side
+//	 0.0f, 0.8f,  0.0f,     0.92f, 0.86f, 0.76f,	 2.5f, 5.0f,	 0.8f, 0.5f,  0.0f, // Right side
+//
+//	 0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f,	 5.0f, 0.0f,	 0.0f, 0.5f,  0.8f, // Facing side
+//	-0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f, 	 0.0f, 0.0f,	 0.0f, 0.5f,  0.8f, // Facing side
+//	 0.0f, 0.8f,  0.0f,     0.92f, 0.86f, 0.76f,	 2.5f, 5.0f,	 0.0f, 0.5f,  0.8f  // Facing side
+//};
+//
+//GLuint indices[] = {
+//	0, 1, 2,	// Bottom side
+//	0, 2, 3,	// Bottom side
+//	4, 6, 5,	// Left side
+//	7, 9, 8,	// Non-facing side
+//	10, 12, 11, // Right side
+//	13, 15, 14	// Facing side
+//};
+
+//GLfloat vertices[] = {
+//	// Position				// Color				 // UV			 // Normals
+//	-1.0f, 0.0f,  1.0f,		0.0f, 0.0f, 0.0f,		0.0f, 0.0f,		0.0f, 1.0f, 0.0f,
+//	-1.0f, 0.0f, -1.0f,		0.0f, 0.0f, 0.0f,		0.0f, 1.0f,		0.0f, 1.0f, 0.0f,
+//	 1.0f, 0.0f, -1.0f,		0.0f, 0.0f, 0.0f,		1.0f, 1.0f,		0.0f, 1.0f, 0.0f,
+//	 1.0f, 0.0f,  1.0f,		0.0f, 0.0f, 0.0f,		1.0f, 0.0f,		0.0f, 1.0f, 0.0f
+//};
+//GLuint indices[] =
+//{
+//	0, 1, 2,
+//	0, 2, 3
+//};
+
+Vertex vertices[] = {
+	Vertex{ glm::vec3(-1.0f, 0.0f,  1.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(0.0f, 0.0f) },
+	Vertex{ glm::vec3(-1.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(0.0f, 1.0f) },
+	Vertex{ glm::vec3(1.0f, 0.0f, -1.0f),  glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(1.0f, 1.0f) },
+	Vertex{ glm::vec3(1.0f, 0.0f,  1.0f),  glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(1.0f, 0.0f) }
+};
+GLuint indices[] =
 {
-	// Setup
-	glfwInit();
-	
+	0, 1, 2,
+	0, 2, 3
+};
+
+Vertex lightVertices[] = {
+	Vertex{glm::vec3(-0.1f, -0.1f,  0.1f)},
+	Vertex{glm::vec3(-0.1f, -0.1f, -0.1f)},
+	Vertex{glm::vec3(0.1f, -0.1f, -0.1f)},
+	Vertex{glm::vec3(0.1f, -0.1f,  0.1f)},
+	Vertex{glm::vec3(-0.1f,  0.1f,  0.1f)},
+	Vertex{glm::vec3(-0.1f,  0.1f, -0.1f)},
+	Vertex{glm::vec3(0.1f,  0.1f, -0.1f)},
+	Vertex{glm::vec3(0.1f,  0.1f,  0.1f)}
+};
+GLuint lightIndices[] = {
+	0, 1, 2,
+	0, 2, 3,
+	0, 4, 7,
+	0, 7, 3,
+	3, 7, 6,
+	3, 6, 2,
+	2, 6, 5,
+	2, 5, 1,
+	1, 5, 4,
+	1, 4, 0,
+	4, 5, 6,
+	4, 6, 7
+};
+
+void Log(const char* message)
+{
+	std::cout << message << std::endl;
+}
+
+void setupGLFW()
+{
+	// Setup GLFW
+	if (!glfwInit())
+	{
+		Log("Failed to initialize GLFW");
+		exit(-1);
+	}
+
+	// Set OpenGL version to 3.3
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+}
 
-	// Vertices for triangle
-	GLfloat vertices[] = {
-		// Position				// Color
-		-0.5f, -0.5f, 0.0f,		0.8f, 0.3f, 0.02f, // Lower left
-		 0.5f, -0.5f, 0.0f,		0.8f, 0.3f, 0.02f, // Lower right
-		 0.0f, 0.5f, 0.0f,		1.0f, 0.6f, 0.32f, // Upper middle
-		 -0.25f, 0.0f, 0.0f,	0.9f, 0.45f, 0.17f, // Inner left
-		 0.25f, 0.0f, 0.0f,		0.9f, 0.45f, 0.17f, // Inner right
-		 0.0f, -0.5f, 0.0f,		0.8f, 0.3f, 0.02f, // Inner down
-	};
-
-	GLuint indices[] = {
-		5, 3, 0,
-		4, 2, 3,
-		1, 4, 5
-	};
-	
-	// Create window
-	GLFWwindow* window = glfwCreateWindow(800, 600, "OpenGL", NULL, NULL);
+GLFWwindow* createWindow(
+	int width,
+	int height,
+	const char* title
+) {
+	GLFWwindow* window = glfwCreateWindow(width, height, title, NULL, NULL);
 	if (window == NULL)
 	{
-		std::cout << "Failed to create GLFW window" << std::endl;
+		Log("Failed to create GLFW window");
 		glfwTerminate();
-		return -1;
+		exit(-1);
 	}
+
+	return window;
+}
+
+int main()
+{
+	Log("GLFW Setup");
+	setupGLFW();
+
+	Log("Creating window");
+	int windowWidth = Utils::Constants::Screen::WIDTH;
+	int windowHeight = Utils::Constants::Screen::HEIGHT;
+	GLFWwindow* window = createWindow(windowWidth, windowHeight, "OpenGL");
 	glfwMakeContextCurrent(window);
-	
+
+	Log("Glad load GL");
 	gladLoadGL();
-	glViewport(0, 0, 800, 600);
+	glViewport(0, 0, windowWidth, windowHeight);
 
-	Shader shaderProgram("default.vert", "default.frag");
+	Log("Create textures");
+	Texture textures[] = {
+		Texture("Assets/Textures/Planks/planks.png", "diffuse", 0),
+		Texture("Assets/Textures/Planks/planksSpec.png", "specular", 1)
+	};
 
-	// Create Vertex Array Object and bind it
-	VAO VAO1;
-	VAO1.Bind();
+	Log("Init shader program");
+	Shader shaderProgram("Assets/Shaders/Default/default.vert", "Assets/Shaders/Default/default.frag");
+	// Shader shaderProgram("Assets/Shaders/Depth/depth.vert", "Assets/Shaders/Depth/depth.frag");
 
-	// Create Vertex Buffer Object and Element Buffer Object
-	VBO VBO1(vertices, sizeof(vertices));
-	EBO EBO1(indices, sizeof(indices));
+	Log("Creating mesh");
+	std::vector <Vertex> meshFloorVertices(vertices, vertices + sizeof(vertices) / sizeof(vertices[0]));
+	std::vector <GLuint> meshFloorIndices(indices, indices + sizeof(indices) / sizeof(indices[0]));
+	std::vector <Texture> meshTextures(textures, textures + sizeof(textures) / sizeof(textures[0]));
+	Mesh meshFloor(meshFloorVertices, meshFloorIndices, meshTextures);
 
-	// Link VBO to VAO
-	//VAO1.LinkVBO(VBO1, 0);
-	VAO1.LinkAttrib(VBO1, 0, 3, GL_FLOAT, 6 * sizeof(GLfloat), (void*)0);
-	VAO1.LinkAttrib(VBO1, 1, 3, GL_FLOAT, 6 * sizeof(GLfloat), (void*)(3 * sizeof(float)));
+	Model modelGTLF("Assets/Models/bunny/scene.gltf");
+	//Model modelGTLF("Assets/Models/map/scene.gltf");
 
-	// Unbind all to prevent accidentally modifying them
-	VAO1.Unbind();
-	VBO1.Unbind();
-	EBO1.Unbind();
+	Log("Init light shader program");
+	Shader lightShader("Assets/Shaders/Light/light.vert", "Assets/Shaders/Light/light.frag");
 
-	// Get scale uniform
-	GLuint uniScale = glGetUniformLocation(shaderProgram.ID, "scale");
+	Log("Creating light mesh");
+	std::vector<Vertex> meshLightVertices(lightVertices, lightVertices + sizeof(lightVertices) / sizeof(lightVertices[0]));
+	std::vector<GLuint> meshLightIndices(lightIndices, lightIndices + sizeof(lightIndices) / sizeof(lightIndices[0]));
+	std::vector <Texture> meshLighthTextures;
+	Mesh meshLight(meshLightVertices, meshLightIndices, meshLighthTextures);
 
-	float scale = 0.5f;
-	float scaleChange = 0.001f;
+	glm::vec4 lightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	glm::mat4 lightModel = glm::mat4(1.0f);
+	glm::vec3 lightPos = glm::vec3(0.5f, 1.0f, 0.5f);
+	lightModel = glm::translate(lightModel, lightPos);
+	
+	lightShader.Activate();
+	glUniform4f(
+		glGetUniformLocation(lightShader.ID, "lightColor"),
+		lightColor.x, lightColor.y, lightColor.z, lightColor.w
+	);
+	glUniform3f(
+		glGetUniformLocation(lightShader.ID, "lightPos"),
+		lightPos.x, lightPos.y, lightPos.z
+	);
 
+	shaderProgram.Activate();
+	glUniform4f(
+		glGetUniformLocation(shaderProgram.ID, "lightColor"),
+		lightColor.x, lightColor.y, lightColor.z, lightColor.w
+	);
+	glUniform3f(
+		glGetUniformLocation(shaderProgram.ID, "lightPos"),
+		lightPos.x, lightPos.y, lightPos.z
+	);
+
+	Log("Camera creation");
+	Camera camera(windowWidth, windowHeight, glm::vec3(0.0f, 0.0f, 2.0f));
+	camera.sensitivity = Utils::Constants::Camera::SENSITIVITY;
+
+	Log("Configuration");
+	glEnable(GL_DEPTH_TEST);
+
+	// Occlusion culling
+	// glEnable(GL_CULL_FACE);
+	// glCullFace(GL_FRONT);
+	// glFrontFace(GL_CW);
+
+	// Vsync off
+	// glfwSwapInterval(0);
+
+	// Frame counter
+	double timePrev = glfwGetTime();
+	double timeCur = 0.0;
+
+	Log("Main loop");
 	while (!glfwWindowShouldClose(window))
 	{
+		// Frame time calculation
+		timeCur = glfwGetTime();
+		float frameTime = timeCur - timePrev;
+		timePrev = timeCur;
+		glfwSetWindowTitle(window, ("OpenGL - Frame time: " + std::to_string(frameTime)).c_str());
+
+		// Reset buffers
 		glClearColor(0.07f, 0.12f, 0.17f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
-		
-		// Activate shader
-		shaderProgram.Activate();
-		
-		// Set scale uniform
-		glUniform1f(uniScale, scale);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		// Update scale logic
-		scale += scaleChange;
-		if (scale > 1.0f)
-			scaleChange = -scaleChange;
-		else if (scale < 0.5f)
-			scaleChange = -scaleChange;
+		// Handle input
+		camera.Inputs(window);
+		camera.UpdateMatrix(45.0f, 0.1f, 100.0f);
 
-		// Draw triangles
-		VAO1.Bind();
-		glDrawElements(GL_TRIANGLES, 9, GL_UNSIGNED_INT, 0);
-		
+		modelGTLF.Draw(shaderProgram, camera);
+		meshFloor.Draw(shaderProgram, camera);
+		meshLight.Draw(lightShader, camera, lightModel);
+
 		// Swap the back and front buffers
 		glfwSwapBuffers(window);
 
@@ -102,13 +245,10 @@ int main()
 	}
 
 	// Clean up
-	VAO1.Delete();
-	VBO1.Delete();
-	EBO1.Delete();
 	shaderProgram.Delete();
-	
+
 	glfwDestroyWindow(window);
 	glfwTerminate();
-	
+
 	return 0;
 }

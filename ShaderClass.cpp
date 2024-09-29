@@ -1,6 +1,6 @@
 #include "ShaderClass.h"
 
-std::string get_file_contents(const char* filename)
+std::string GetFileContents(const char* filename)
 {
 	std::ifstream in(filename, std::ios::binary);
 	if (in)
@@ -18,8 +18,8 @@ std::string get_file_contents(const char* filename)
 
 Shader::Shader(const char* vertexPath, const char* fragmentPath)
 {
-	std::string vertexCode = get_file_contents(vertexPath);
-	std::string fragmentCode = get_file_contents(fragmentPath);
+	std::string vertexCode = GetFileContents(vertexPath);
+	std::string fragmentCode = GetFileContents(fragmentPath);
 
 	const char* vertexSource = vertexCode.c_str();
 	const char* fragmentSource = fragmentCode.c_str();
@@ -32,7 +32,7 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath)
 	GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
 	glShaderSource(fragmentShader, 1, &fragmentSource, NULL);
 	glCompileShader(fragmentShader);
-	CompileErrors(vertexShader, "VERTEX");
+	compileErrors(vertexShader, "VERTEX");
 
 	// Create shader program
 	ID = glCreateProgram();
@@ -55,7 +55,7 @@ void Shader::Delete()
 	glDeleteProgram(ID);
 }
 
-void Shader::CompileErrors(unsigned int shader, const char* type)
+void Shader::compileErrors(unsigned int shader, const char* type)
 {
 	GLint hasCompiled;
 	char infoLog[1024];
@@ -81,8 +81,8 @@ void Shader::CompileErrors(unsigned int shader, const char* type)
 
 //Shader::Shader(const char* vertexPath, const char* fragmentPath)
 //{
-//	std::string vertexCode = get_file_contents(vertexPath);
-//	std::string fragmentCode = get_file_contents(fragmentPath);
+//	std::string vertexCode = GetFileContents(vertexPath);
+//	std::string fragmentCode = GetFileContents(fragmentPath);
 //
 //	const char* vShaderCode = vertexCode.c_str();
 //	const char* fShaderCode = fragmentCode.c_str();

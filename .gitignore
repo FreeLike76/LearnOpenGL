@@ -398,5 +398,6 @@ FodyWeavers.xsd
 *.sln.iml
 
 # Custom
+Assets/Models/
 Libraries/
 glad.c

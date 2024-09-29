@@ -16,6 +16,24 @@
     <Filter Include="Resource Files\Shaders">
       <UniqueIdentifier>{50e57c09-dbfb-46a8-826d-855185e1221b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\Textures">
+      <UniqueIdentifier>{8b21f1d0-b2de-40b1-a3a6-da914f860e40}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Textures\Planks">
+      <UniqueIdentifier>{6572ff72-30d3-4501-ae86-494d3b705eae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Entities">
+      <UniqueIdentifier>{0b0132b1-b8d4-40b7-984c-8edcb5b1886d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Shaders\Default">
+      <UniqueIdentifier>{3982390f-9e2d-466c-a967-4af26c4fb936}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Shaders\Light">
+      <UniqueIdentifier>{9618d874-f141-4a1d-83a3-b212b2b5728a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Shaders\Depth">
+      <UniqueIdentifier>{2f196944-3c8f-4d97-9c0c-cb450b09d5ac}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="glad.c">
@@ -36,14 +54,24 @@
     <ClCompile Include="VAO.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="default.vert">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="default.frag">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
+    <ClCompile Include="stb.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Model.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="tiny_gltf.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ShaderClass.h">
@@ -58,5 +86,57 @@
     <ClInclude Include="VAO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Vertex.h">
+      <Filter>Header Files\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="Model.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Assets\Textures\image.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="Assets\Textures\pop_cat.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="Assets\Textures\Planks\planks.png">
+      <Filter>Resource Files\Textures\Planks</Filter>
+    </Image>
+    <Image Include="Assets\Textures\Planks\planksSpec.png">
+      <Filter>Resource Files\Textures\Planks</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Assets\Shaders\Default\default.frag">
+      <Filter>Resource Files\Shaders\Default</Filter>
+    </None>
+    <None Include="Assets\Shaders\Default\default.vert">
+      <Filter>Resource Files\Shaders\Default</Filter>
+    </None>
+    <None Include="Assets\Shaders\Light\light.frag">
+      <Filter>Resource Files\Shaders\Light</Filter>
+    </None>
+    <None Include="Assets\Shaders\Light\light.vert">
+      <Filter>Resource Files\Shaders\Light</Filter>
+    </None>
+    <None Include="Assets\Shaders\Depth\depth.frag">
+      <Filter>Resource Files\Shaders\Depth</Filter>
+    </None>
+    <None Include="Assets\Shaders\Depth\depth.vert">
+      <Filter>Resource Files\Shaders\Depth</Filter>
+    </None>
   </ItemGroup>
 </Project>
